@@ -1,0 +1,3 @@
+dependencies {
+//    implementation project(':iban-blacklist-service')
+}

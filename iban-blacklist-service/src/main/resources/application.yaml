@@ -1,0 +1,8 @@
+quarkus:
+  mongodb:
+    connection-string: "mongodb://app-mongo:27017"
+    database: "blacklist"
+    credentials:
+      auth-source: "blacklist"
+      username: "user"
+      password: "password"
