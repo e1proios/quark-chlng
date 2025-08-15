@@ -1,1 +1,4 @@
-{}
+quarkus:
+  rest-client:
+    blacklist-service:
+      url: "http://iban-blacklist-service:8080/"

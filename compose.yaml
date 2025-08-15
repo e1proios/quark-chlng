@@ -39,7 +39,6 @@ services:
     container_name: invoice-scanner-service
     hostname: invoice-scanner-service
     depends_on:
-      - app-mongo
       - iban-blacklist-service
     build:
       context: ./invoice-scanner-service/
