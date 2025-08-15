@@ -1,6 +1,6 @@
 package chlng.e1proios;
 
-//import io.quarkus.security.Authenticated;
+import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -10,7 +10,7 @@ import org.jboss.resteasy.reactive.NoCache;
 import org.jboss.resteasy.reactive.RestResponse;
 
 @Path("/api/blacklist")
-//@Authenticated
+@Authenticated
 public class BlacklistController {
 
     @Inject
