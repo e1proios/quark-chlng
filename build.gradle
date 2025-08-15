@@ -23,11 +23,12 @@ subprojects {
     }
 
     dependencies {
+        implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
         implementation 'io.quarkus:quarkus-arc'
         implementation 'io.quarkus:quarkus-config-yaml'
         implementation 'io.quarkus:quarkus-rest'
         implementation 'io.quarkus:quarkus-rest-client-jackson'
-        implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+        implementation 'io.quarkus:quarkus-oidc'
         testImplementation 'io.rest-assured:rest-assured'
     }
 
