@@ -1,6 +1,7 @@
 package chlng.e1proios;
 
 import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -18,6 +19,7 @@ public class BlacklistController {
 
     @GET
     @Path("/")
+    @RolesAllowed("user")
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
     public RestResponse<String[]> getBlacklistedIbans() {

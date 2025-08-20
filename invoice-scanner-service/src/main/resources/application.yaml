@@ -2,3 +2,10 @@ quarkus:
   rest-client:
     blacklist-service:
       url: "http://iban-blacklist-service:8080/"
+
+  oidc:
+    application-type: service
+    auth-server-url: "http://keycloak:8888/realms/quark-chlng"
+    client-id: ${OIDC_CLIENT_ID:invoice-scanner}
+    credentials:
+      secret: ${OIDC_CLIENT_SECRET:0GUEMfv2pogEsgMN9h9pYIe5ZFULtzGw}
