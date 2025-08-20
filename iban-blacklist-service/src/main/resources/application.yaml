@@ -7,15 +7,15 @@ quarkus:
       username: "user"
       password: "password"
 
-  oidc:
-    auth-server-url: ${OIDC_AUTH_SERVER_URL:http://keycloak:8080/realms/quark-chlng}
-    client-id: ${OIDC_CLIENT_ID:iban-blacklist}
-    credentials:
-      secret: ${OIDC_CLIENT_SECRET:G0xiUb5aYdJGy9nUeOx0N8274Ko3R2Z4}
-
-  log:
-    category:
-      "io.quarkus.oidc":
-        level: DEBUG
-      "io.quarkus.security":
-        level: DEBUG
+#  oidc:
+#    auth-server-url: ${OIDC_AUTH_SERVER_URL:http://keycloak:8080/realms/quark-chlng}
+#    client-id: ${OIDC_CLIENT_ID:iban-blacklist}
+#    credentials:
+#      secret: ${OIDC_CLIENT_SECRET:G0xiUb5aYdJGy9nUeOx0N8274Ko3R2Z4}
+#
+#  log:
+#    category:
+#      "io.quarkus.oidc":
+#        level: DEBUG
+#      "io.quarkus.security":
+#        level: DEBUG

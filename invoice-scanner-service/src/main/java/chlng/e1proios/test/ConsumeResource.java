@@ -1,4 +1,4 @@
-package chlng.e1proios;
+package chlng.e1proios.test;
 
 import io.quarkus.runtime.QuarkusApplication;
 import io.quarkus.runtime.annotations.QuarkusMain;
@@ -10,9 +10,10 @@ import org.jboss.resteasy.reactive.RestResponse;
 
 import chlng.e1proios.client.BlacklistClient;
 
-@QuarkusMain
-public class ConsumeResource implements QuarkusApplication {
+// @QuarkusMain
+public class ConsumeResource /* implements QuarkusApplication */{
 
+/*
     @Inject
     @RestClient
     BlacklistClient blacklistClient;
@@ -32,4 +33,5 @@ public class ConsumeResource implements QuarkusApplication {
         }
         return 0;
     }
+*/
 }

@@ -43,6 +43,7 @@ services:
     image: mongo:latest
     container_name: app-mongo
     hostname: app-mongo
+    command: mongod --quiet --logpath /dev/null
     environment:
       MONGO_INITDB_ROOT_USERNAME: "admin"
       MONGO_INITDB_ROOT_PASSWORD: "admin"
