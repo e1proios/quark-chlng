@@ -1,99 +1,116 @@
 services:
-#  keycloak:
-#    image: keycloak/keycloak:latest
-#    container_name: keycloak
-#    hostname: keycloak
-#    command:
-#      - start-dev
-#      - --hostname-strict=false
-#    environment:
-#      KEYCLOAK_ADMIN: admin
-#      KEYCLOAK_ADMIN_PASSWORD: admin
-#      KC_DB: postgres
-#      KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
-#      KC_DB_USERNAME: keycloak
-#      KC_DB_PASSWORD: keycloak
-#      KC_HOSTNAME_STRICT: false
-#      KC_HOSTNAME_STRICT_HTTPS: false
-#      KC_HTTP_ENABLED: true
-#      KC_HEALTH_ENABLED: true
-#      KC_METRICS_ENABLED: true
-#    ports:
-#      - "8888:8080"
-#      - "9000:9000"
-#    networks:
-#      - app-network
-#
-#  keycloak-db:
-#    image: postgres:15
-#    hostname: keycloak-db
-#    container_name: keycloak-db
-#    ports:
-#      - "5432:5432"
-#    environment:
-#      POSTGRES_DB: keycloak
-#      POSTGRES_USER: keycloak
-#      POSTGRES_PASSWORD: keycloak
-#    volumes:
-#      - postgres_data:/var/lib/postgresql/data
-#    networks:
-#      - app-network
+    #  keycloak:
+    #    image: keycloak/keycloak:latest
+    #    container_name: keycloak
+    #    hostname: keycloak
+    #    command:
+    #      - start-dev
+    #      - --hostname-strict=false
+    #    environment:
+    #      KEYCLOAK_ADMIN: admin
+    #      KEYCLOAK_ADMIN_PASSWORD: admin
+    #      KC_DB: postgres
+    #      KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
+    #      KC_DB_USERNAME: keycloak
+    #      KC_DB_PASSWORD: keycloak
+    #      KC_HOSTNAME_STRICT: false
+    #      KC_HOSTNAME_STRICT_HTTPS: false
+    #      KC_HTTP_ENABLED: true
+    #      KC_HEALTH_ENABLED: true
+    #      KC_METRICS_ENABLED: true
+    #    ports:
+    #      - "8888:8080"
+    #      - "9000:9000"
+    #    networks:
+    #      - app-network
+    #
+    #  keycloak-db:
+    #    image: postgres:15
+    #    hostname: keycloak-db
+    #    container_name: keycloak-db
+    #    ports:
+    #      - "5432:5432"
+    #    environment:
+    #      POSTGRES_DB: keycloak
+    #      POSTGRES_USER: keycloak
+    #      POSTGRES_PASSWORD: keycloak
+    #    volumes:
+    #      - postgres_data:/var/lib/postgresql/data
+    #    networks:
+    #      - app-network
 
-  app-mongo:
-    image: mongo:latest
-    container_name: app-mongo
-    hostname: app-mongo
-    command: mongod --quiet --logpath /dev/null
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: "admin"
-      MONGO_INITDB_ROOT_PASSWORD: "admin"
-    ports:
-      - "27017:27017"
-    volumes:
-      - ./mongo-init:/docker-entrypoint-initdb.d
-    healthcheck:
-      test: mongosh --eval "db.adminCommand('ping')" -u admin -p admin --authenticationDatabase admin
-      interval: 10s
-      timeout: 30s
-      retries: 3
-    restart: unless-stopped
-    networks:
-      - app-network
+    app-mongo:
+        image: mongo:latest
+        container_name: app-mongo
+        hostname: app-mongo
+        command: mongod --quiet --logpath /dev/null
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: "admin"
+            MONGO_INITDB_ROOT_PASSWORD: "admin"
+        ports:
+            - "27017:27017"
+        volumes:
+            - ./mongo-init:/docker-entrypoint-initdb.d
+        healthcheck:
+            test: mongosh --eval "db.adminCommand('ping')" -u admin -p admin --authenticationDatabase admin
+            interval: 10s
+            timeout: 30s
+            retries: 3
+        restart: unless-stopped
+        networks:
+            - app-network
 
-  iban-blacklist-service:
-    container_name: iban-blacklist-service
-    hostname: iban-blacklist-service
-    depends_on:
-      app-mongo:
-        condition: service_healthy
-    build:
-      context: ./iban-blacklist-service/
-      dockerfile: ./src/main/docker/Dockerfile.jvm
-    ports:
-      - "8080:8080"
-    environment:
-      QUARKUS_HTTP_PORT: "8080"
-    networks:
-      - app-network
+    file-server:
+        image: python:3.9-alpine
+        container_name: file-server
+        ports:
+            - "3333:3333"
+        volumes:
+            - ./static_files:/app
+        working_dir: /app
+        command: python -m http.server 3333
+        restart: unless-stopped
+        networks:
+            - app-network
 
-  invoice-scanner-service:
-    container_name: invoice-scanner-service
-    hostname: invoice-scanner-service
-    depends_on:
-      - iban-blacklist-service
-    build:
-      context: ./invoice-scanner-service/
-      dockerfile: ./src/main/docker/Dockerfile.jvm
-    ports:
-      - "8088:8080"
-    environment:
-      QUARKUS_HTTP_PORT: "8080"
-    networks:
-      - app-network
+    iban-blacklist-service:
+        container_name: iban-blacklist-service
+        hostname: iban-blacklist-service
+        depends_on:
+            app-mongo:
+                condition: service_healthy
+        build:
+            context: ./iban-blacklist-service/
+            dockerfile: ./src/main/docker/Dockerfile.jvm
+        ports:
+            - "8080:8080"
+            - "${DEBUG_PORT_BLACKLIST_SVC:-5005}:${DEBUG_PORT_BLACKLIST_SVC:-5005}"
+        environment:
+            - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:${DEBUG_PORT_BLACKLIST_SVC:-5005}
+            - QUARKUS_HTTP_PORT=8080
+        networks:
+            - app-network
+
+    invoice-scanner-service:
+        container_name: invoice-scanner-service
+        hostname: invoice-scanner-service
+        depends_on:
+            - iban-blacklist-service
+        build:
+            context: ./invoice-scanner-service/
+            dockerfile: ./src/main/docker/Dockerfile.jvm
+        ports:
+            - "8088:8080"
+            - "${DEBUG_PORT_SCANNER_SVC:-5006}:${DEBUG_PORT_SCANNER_SVC:-5006}"
+        environment:
+            - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:${DEBUG_PORT_SCANNER_SVC:-5006}
+            - QUARKUS_HTTP_PORT=8080
+        networks:
+            - app-network
 
 networks:
-  app-network:
-    driver: bridge
+    app-network:
+        driver: bridge
 
 volumes:
-  postgres_data:
+    postgres_data:

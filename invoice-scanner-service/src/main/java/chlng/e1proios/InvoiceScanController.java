@@ -12,6 +12,8 @@ import org.jboss.resteasy.reactive.RestResponse;
 
 import chlng.e1proios.client.BlacklistClient;
 
+import java.io.IOException;
+
 @Path("api/scan")
 public class InvoiceScanController {
 
@@ -32,16 +34,20 @@ public class InvoiceScanController {
         try (RestResponse<String[]> res = this.blacklistClient.getBlacklistedIbans()) {
             if (res.getStatus() != 200) {
                 System.err.println("Status code: " + res.getStatus());
-
                 return RestResponse.notFound();
             } else {
                 String[] ibans = res.readEntity(new GenericType<>() {});
-                var invoiceDirty = this.invoiceScanService.doesInvoiceContainBlacklistedIban(data.url(), ibans);
 
-                return RestResponse.ok("Invoice dirty: " + invoiceDirty);
+                try {
+                    var invoiceDirty = this.invoiceScanService.doesInvoiceContainBlacklistedIban(data.url(), ibans);
+                    return RestResponse.ok("Invoice dirty: " + invoiceDirty);
+                } catch (IOException ioe) {
+                    System.err.println("Invoice scan controller - inner exception: " + ioe.getMessage());
+                    return RestResponse.notFound();
+                }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Invoice scan controller - outer exception: " + e.getMessage());
             return RestResponse.notFound();
         }
     }
