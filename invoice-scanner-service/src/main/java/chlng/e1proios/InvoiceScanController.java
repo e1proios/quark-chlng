@@ -11,6 +11,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.RestResponse;
 
 import chlng.e1proios.client.BlacklistClient;
+import chlng.e1proios.util.DevLogger;
 
 import java.io.IOException;
 
@@ -26,28 +27,31 @@ public class InvoiceScanController {
     @Inject
     InvoiceScanService invoiceScanService;
 
+    @Inject
+    DevLogger testLogger;
+
     @POST
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
-    public RestResponse<String> scan(ScanPayload data) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public RestResponse<InvoiceScanService.PdfInfo> scan(ScanPayload data) {
         try (RestResponse<String[]> res = this.blacklistClient.getBlacklistedIbans()) {
             if (res.getStatus() != 200) {
-                System.err.println("Status code: " + res.getStatus());
+                this.testLogger.log("Status code: " + res.getStatus(), true);
                 return RestResponse.notFound();
             } else {
                 String[] ibans = res.readEntity(new GenericType<>() {});
 
                 try {
-                    var invoiceDirty = this.invoiceScanService.doesInvoiceContainBlacklistedIban(data.url(), ibans);
-                    return RestResponse.ok("Invoice dirty: " + invoiceDirty);
+                    var invoiceInfo = this.invoiceScanService.checkPdfForBlacklistedIbans(data.url(), ibans);
+                    return RestResponse.ok(invoiceInfo);
                 } catch (IOException ioe) {
-                    System.err.println("Invoice scan controller - inner exception: " + ioe.getMessage());
+                    this.testLogger.log("Invoice scan controller - inner exception: " + ioe.getMessage(), true);
                     return RestResponse.notFound();
                 }
             }
         } catch (Exception e) {
-            System.err.println("Invoice scan controller - outer exception: " + e.getMessage());
+            this.testLogger.log("Invoice scan controller - outer exception: " + e.getMessage(), true);
             return RestResponse.notFound();
         }
     }

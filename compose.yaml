@@ -96,6 +96,7 @@ services:
         hostname: invoice-scanner-service
         depends_on:
             - iban-blacklist-service
+            - file-server
         build:
             context: ./invoice-scanner-service/
             dockerfile: ./src/main/docker/Dockerfile.jvm
