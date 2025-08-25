@@ -1,10 +1,10 @@
 package chlng.e1proios;
 
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
+import jakarta.ws.rs.core.GenericType;
+import java.io.*;
 import java.net.*;
 import java.net.http.*;
 import java.time.Duration;
@@ -15,8 +15,11 @@ import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.resteasy.reactive.RestResponse;
 
 import chlng.e1proios.util.DevLogger;
+import chlng.e1proios.client.BlacklistClient;
 
 @ApplicationScoped
 public class InvoiceScanService {
@@ -31,6 +34,10 @@ public class InvoiceScanService {
     }
 
     @Inject
+    @RestClient
+    BlacklistClient blacklistClient;
+
+    @Inject
     DevLogger testLogger;
 
     {
@@ -40,23 +47,29 @@ public class InvoiceScanService {
             .build();
     }
 
-    public PdfInfo checkPdfForBlacklistedIbans(
-        String pdfUrl,
-        String[] blacklistedIbans
-    ) throws Exception {
+    public PdfInfo checkPdfForBlacklistedIbans(String pdfUrl) throws Exception {
         HttpResponse<InputStream> res = this.fetchPDF(pdfUrl);
 
         if (res.statusCode() != 200) {
-            this.testLogger.log("PDF fetch failed: " + res.statusCode(), true);
-            return new PdfInfo();
+            var errorMsg = "PDF fetch failed: " + res.statusCode();
+            this.testLogger.log(errorMsg, true);
+            throw new Exception(errorMsg);
         } else {
-            this.testLogger.log("PDF fetched successfully");
+            InputStream pdfStream = res.body();
+            PDDocument pdfDoc = Loader.loadPDF(RandomAccessReadBuffer.createBufferFromStream(pdfStream));
 
-            try (InputStream pdfStream = res.body();
-                 PDDocument pdfDoc = Loader.loadPDF(RandomAccessReadBuffer.createBufferFromStream(pdfStream))
-            ) {
-                return this.processPdf(pdfUrl, pdfDoc, blacklistedIbans);
+            this.testLogger.log("PDF fetched successfully, getting blacklisted Ibans");
+
+            RestResponse<String[]> blacklist = this.blacklistClient.getBlacklistedIbans();
+
+            if (blacklist.getStatus() != 200) {
+                var blacklistErrorMsg = "Blacklist fetch failed: " + blacklist.getStatus();
+                this.testLogger.log(blacklistErrorMsg, true);
+                throw new Exception(blacklistErrorMsg);
             }
+
+            String[] blacklistedIbans = blacklist.readEntity(new GenericType<>() {});
+            return this.processPdf(pdfUrl, pdfDoc, blacklistedIbans);
         }
     }
 
