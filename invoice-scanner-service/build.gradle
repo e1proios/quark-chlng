@@ -1,4 +1,5 @@
 dependencies {
     implementation 'io.quarkiverse.pdfbox:quarkus-pdfbox:1.1.1'
+    implementation 'io.quarkus:quarkus-messaging-kafka'
     implementation project(':iban-blacklist-service')
 }

@@ -24,9 +24,9 @@ public class InvoiceScanService {
     private final HttpClient http;
     private final boolean showTestLogs = true;
 
-    public record PdfInfo(boolean dirty, String firstFound, int page) {
+    public record PdfInfo(String srcUrl, boolean dirty, String firstFound, int page) {
         public PdfInfo() {
-            this(false, "", 0);
+            this("", false, "", 0);
         }
     }
 
@@ -55,12 +55,16 @@ public class InvoiceScanService {
             try (InputStream pdfStream = res.body();
                  PDDocument pdfDoc = Loader.loadPDF(RandomAccessReadBuffer.createBufferFromStream(pdfStream))
             ) {
-                return this.processPdf(pdfDoc, blacklistedIbans);
+                return this.processPdf(pdfUrl, pdfDoc, blacklistedIbans);
             }
         }
     }
 
-    private PdfInfo processPdf (PDDocument pdfDoc, String[] blacklistedIbans) throws IOException {
+    private PdfInfo processPdf (
+        String srcUrl,
+        PDDocument pdfDoc,
+        String[] blacklistedIbans
+    ) throws IOException {
         var totalPages = pdfDoc.getNumberOfPages();
         PdfInfo ret = new PdfInfo();
         int pageNum;
@@ -84,7 +88,7 @@ public class InvoiceScanService {
                 .findFirst();
 
             if (res.isPresent()) {
-                ret =  new PdfInfo(true, res.get(), pageNum);
+                ret =  new PdfInfo(srcUrl,true, res.get(), pageNum);
                 break;
             }
         }
