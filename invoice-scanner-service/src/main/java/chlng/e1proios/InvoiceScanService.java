@@ -25,7 +25,6 @@ import chlng.e1proios.client.BlacklistClient;
 public class InvoiceScanService {
 
     private final HttpClient http;
-    private final boolean showTestLogs = true;
 
     public record PdfInfo(String srcUrl, boolean dirty, String firstFound, int page) {
         public PdfInfo() {
@@ -38,7 +37,7 @@ public class InvoiceScanService {
     BlacklistClient blacklistClient;
 
     @Inject
-    DevLogger testLogger;
+    DevLogger devLogger;
 
     {
         this.http = HttpClient.newBuilder()
@@ -48,29 +47,31 @@ public class InvoiceScanService {
     }
 
     public PdfInfo checkPdfForBlacklistedIbans(String pdfUrl) throws Exception {
-        HttpResponse<InputStream> res = this.fetchPDF(pdfUrl);
+        HttpResponse<InputStream> pdfResponse = this.fetchPDF(pdfUrl);
 
-        if (res.statusCode() != 200) {
-            var errorMsg = "PDF fetch failed: " + res.statusCode();
-            this.testLogger.log(errorMsg, true);
-            throw new Exception(errorMsg);
+        if (pdfResponse.statusCode() != 200) {
+            throw new Exception("PDF fetch failed: " + pdfResponse.statusCode());
         } else {
-            InputStream pdfStream = res.body();
-            PDDocument pdfDoc = Loader.loadPDF(RandomAccessReadBuffer.createBufferFromStream(pdfStream));
+            InputStream pdfStream = pdfResponse.body();
+            String[] blacklistedIbans = this.getBlacklistedIbans();
 
-            this.testLogger.log("PDF fetched successfully, getting blacklisted Ibans");
-
-            RestResponse<String[]> blacklist = this.blacklistClient.getBlacklistedIbans();
-
-            if (blacklist.getStatus() != 200) {
-                var blacklistErrorMsg = "Blacklist fetch failed: " + blacklist.getStatus();
-                this.testLogger.log(blacklistErrorMsg, true);
-                throw new Exception(blacklistErrorMsg);
+            try (PDDocument pdfDoc =
+                Loader.loadPDF(RandomAccessReadBuffer.createBufferFromStream(pdfStream))
+            ) {
+                return this.processPdf(pdfUrl, pdfDoc, blacklistedIbans);
+            } catch (IOException ioe) {
+                throw new Exception("Error reading PDF: " + ioe.getMessage());
             }
-
-            String[] blacklistedIbans = blacklist.readEntity(new GenericType<>() {});
-            return this.processPdf(pdfUrl, pdfDoc, blacklistedIbans);
         }
+    }
+
+    private String[] getBlacklistedIbans() throws Exception {
+        RestResponse<String[]> blacklistResponse = this.blacklistClient.getBlacklistedIbans();
+
+        if (blacklistResponse.getStatus() != 200) {
+            throw new Exception("IBAN blacklist fetch failed: " + blacklistResponse.getStatus());
+        }
+        return blacklistResponse.readEntity(new GenericType<>() {});
     }
 
     private PdfInfo processPdf (
@@ -82,8 +83,7 @@ public class InvoiceScanService {
         PdfInfo ret = new PdfInfo();
         int pageNum;
 
-        this.testLogger.log("InvoiceScanService.processPdf()");
-        this.testLogger.log("PDF has " + totalPages + " pages");
+        this.devLogger.log("PDF has " + totalPages + " pages");
 
         PDFTextStripper stripper = new PDFTextStripper();
 
@@ -105,7 +105,7 @@ public class InvoiceScanService {
                 break;
             }
         }
-        this.testLogger.log("Total pages checked: " + pageNum);
+        this.devLogger.log("Total pages checked: " + pageNum);
         return ret;
     }
 
