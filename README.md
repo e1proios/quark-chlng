@@ -1,4 +1,4 @@
-# Quark
+# quark-chlng
 this project consists of two Quarkus microservices, each run in a separate docker container:
 - `invoice-scanner-service`
 - `iban-blacklist-service`
@@ -13,17 +13,21 @@ additionally, following services are run in their own docker containers:
 - Docker Compose 2.0+
 - Java 17+
 
-## how to build & run
+## build & run
 
+in project root directory, first run
+<br>
 ```$ gradle build```
 
+and then
+<br>
 ```$ docker compose up --build```
 
-## how to test
+## test
 
 ### curl
 
-### fafka
+### kafka
 
 start two shells, connect to kafka server in both
 <br>
@@ -41,4 +45,4 @@ enter the URL of the testing PDF into the producer interactive session
 <br>
 ```http://file-server:3333/Testdata_Invoices.pdf```
 
-check the serialized PdfInfoMessage in the consumer terminal
+see the response – a serialized `PdfInfoMessage` – in the consumer terminal
