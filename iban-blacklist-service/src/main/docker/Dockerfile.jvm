@@ -80,6 +80,17 @@
 ###
 FROM registry.access.redhat.com/ubi9/openjdk-21:1.21
 
+# Switch to root for package installation
+USER root
+
+# Install iputils (which includes ping) and clean cache
+RUN microdnf update -y && \
+    microdnf install -y iputils && \
+    microdnf clean all
+
+# Switch back to the default user (usually 185 for OpenJDK images)
+USER 185
+
 ENV LANGUAGE='en_US:en'
 
 

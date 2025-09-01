@@ -1,5 +1,6 @@
 package chlng.e1proios;
 
+import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -17,6 +18,14 @@ public class InvoiceScanController {
 
     @Inject
     DevLogger testLogger;
+
+    @GET
+    @Path("/test")
+    @Authenticated
+    @Produces(MediaType.TEXT_PLAIN)
+    public RestResponse<String> testAuth() {
+        return RestResponse.ok("test");
+    }
 
     @POST
     @Path("/")

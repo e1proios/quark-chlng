@@ -1,4 +1,12 @@
 quarkus:
+    keycloak:
+        policy-enforcer:
+            enable: true
+    oidc:
+        auth-server-url: "http://app-keycloak:8888/realms/quark"
+        client-id: "invoice-scanner-service"
+        credentials:
+            secret: "nm1Hv5Z6zHbkrYtzGJwlQBbly3mzBzlq"
     rest-client:
         blacklist-service:
             url: "http://iban-blacklist-service:8080/"

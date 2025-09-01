@@ -13,8 +13,8 @@ import org.jboss.resteasy.reactive.RestResponse;
 //@Authenticated
 public class BlacklistController {
 
-    @Inject
-    BlacklistService blacklistService;
+//    @Inject
+//    BlacklistService blacklistService;
 
     @GET
     @Path("/")
@@ -22,6 +22,7 @@ public class BlacklistController {
     @Produces(MediaType.APPLICATION_JSON)
     public RestResponse<String[]> getBlacklistedIbans() {
         System.out.println("getBlacklistedIbans()");
-        return RestResponse.ok(this.blacklistService.getBlacklistedIbans());
+        return RestResponse.ok(new String[]{"eat", "shit"});
+        //return RestResponse.ok(this.blacklistService.getBlacklistedIbans());
     }
 }

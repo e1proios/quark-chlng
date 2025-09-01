@@ -117,7 +117,7 @@
         "composite" : true,
         "composites" : {
           "client" : {
-            "realm-management" : [ "query-clients", "view-realm", "manage-realm", "create-client", "view-clients", "impersonation", "view-users", "view-authorization", "manage-users", "manage-clients", "query-groups", "query-users", "view-events", "manage-events", "manage-identity-providers", "query-realms", "manage-authorization", "view-identity-providers" ]
+            "realm-management" : [ "query-clients", "view-realm", "manage-realm", "create-client", "view-clients", "impersonation", "view-authorization", "view-users", "manage-clients", "manage-users", "query-groups", "query-users", "manage-events", "manage-identity-providers", "view-events", "query-realms", "manage-authorization", "view-identity-providers" ]
           }
         },
         "clientRole" : true,
@@ -248,7 +248,22 @@
       } ],
       "iban-blacklist-service" : [ ],
       "security-admin-console" : [ ],
-      "invoice-scanner-service" : [ ],
+      "invoice-scanner-service" : [ {
+        "id" : "30d6cd87-2fea-46da-97bf-f3c502a5181b",
+        "name" : "reviewer",
+        "description" : "can access reviews endpoint",
+        "composite" : false,
+        "clientRole" : true,
+        "containerId" : "e96edc8a-ecef-4908-b078-2818c8e02816",
+        "attributes" : { }
+      }, {
+        "id" : "a6e8c77c-ac7b-41ee-a79f-76f2690c4b76",
+        "name" : "uma_protection",
+        "composite" : false,
+        "clientRole" : true,
+        "containerId" : "e96edc8a-ecef-4908-b078-2818c8e02816",
+        "attributes" : { }
+      } ],
       "admin-cli" : [ ],
       "account-console" : [ ],
       "broker" : [ {
@@ -381,7 +396,9 @@
   "users" : [ {
     "id" : "b7b96e96-1c22-4b61-8917-b18e266a5ce1",
     "username" : "adolf",
-    "firstName" : "Adolf",
+    "firstName" : "Gustav",
+    "lastName" : "Adolf",
+    "email" : "adolf@the-great.post",
     "emailVerified" : true,
     "enabled" : true,
     "createdTimestamp" : 1755799240416,
@@ -397,6 +414,70 @@
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ ],
     "realmRoles" : [ "default-roles-quark" ],
+    "clientRoles" : {
+      "invoice-scanner-service" : [ "reviewer" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "b8981931-4c15-4a45-9924-f49076d3d42e",
+    "username" : "bogdan",
+    "firstName" : "Bogdan",
+    "lastName" : "The Brave",
+    "email" : "bogdan@the-brave.post",
+    "emailVerified" : true,
+    "enabled" : true,
+    "createdTimestamp" : 1756383381555,
+    "totp" : false,
+    "credentials" : [ {
+      "id" : "d6aa1404-8dc9-4e65-9a13-7daba90282e0",
+      "type" : "password",
+      "userLabel" : "My password",
+      "createdDate" : 1756383475644,
+      "secretData" : "{\"value\":\"b9SE8kvVA4qgM8xJCkaQEN4ZZ4FJZGBqMDipzHxc0+Y=\",\"salt\":\"RSa7Snnqh0cDr4Dr7KV+Ow==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-quark" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "7b8f2db4-d3f6-4759-86eb-cc13c30cb90d",
+    "username" : "charlemagne",
+    "email" : "charlemagne@vivelafrance.fr",
+    "emailVerified" : true,
+    "enabled" : true,
+    "createdTimestamp" : 1756383524283,
+    "totp" : false,
+    "credentials" : [ {
+      "id" : "17c526d4-28c0-457a-b7d7-b2d3a6f370d2",
+      "type" : "password",
+      "userLabel" : "My password",
+      "createdDate" : 1756383673594,
+      "secretData" : "{\"value\":\"Jt4/FOBMs3BuUtnc2Ye7CG0+v9raZtpRoPy+LSdo1d0=\",\"salt\":\"dPXs/0m0GyqvkBVO0ra3ZA==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-quark" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "78a332d9-d100-4a2a-9eba-4dbe3c43cef3",
+    "username" : "service-account-invoice-scanner-service",
+    "emailVerified" : false,
+    "enabled" : true,
+    "createdTimestamp" : 1756381654267,
+    "totp" : false,
+    "serviceAccountClientId" : "invoice-scanner-service",
+    "credentials" : [ ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-quark" ],
+    "clientRoles" : {
+      "invoice-scanner-service" : [ "uma_protection" ]
+    },
     "notBefore" : 0,
     "groups" : [ ]
   } ],
@@ -503,7 +584,8 @@
     "protocol" : "openid-connect",
     "attributes" : {
       "realm_client" : "false",
-      "client.use.lightweight.access.token.enabled" : "true"
+      "client.use.lightweight.access.token.enabled" : "true",
+      "post.logout.redirect.uris" : "+"
     },
     "authenticationFlowBindingOverrides" : { },
     "fullScopeAllowed" : true,
@@ -531,7 +613,8 @@
     "frontchannelLogout" : false,
     "protocol" : "openid-connect",
     "attributes" : {
-      "realm_client" : "true"
+      "realm_client" : "true",
+      "post.logout.redirect.uris" : "+"
     },
     "authenticationFlowBindingOverrides" : { },
     "fullScopeAllowed" : false,
@@ -569,6 +652,7 @@
       "client.secret.creation.time" : "1755799176",
       "backchannel.logout.session.required" : "true",
       "standard.token.exchange.enabled" : "false",
+      "post.logout.redirect.uris" : "+",
       "oauth2.device.authorization.grant.enabled" : "false",
       "backchannel.logout.revoke.offline.tokens" : "false"
     },
@@ -590,15 +674,16 @@
     "alwaysDisplayInConsole" : false,
     "clientAuthenticatorType" : "client-secret",
     "secret" : "nm1Hv5Z6zHbkrYtzGJwlQBbly3mzBzlq",
-    "redirectUris" : [ "http://localhost:8088/*" ],
-    "webOrigins" : [ "http://localhost:8088" ],
+    "redirectUris" : [ "http://localhost:8080/*", "http://localhost:8088/*" ],
+    "webOrigins" : [ "http://localhost:8080", "http://localhost:8088" ],
     "notBefore" : 0,
     "bearerOnly" : false,
     "consentRequired" : false,
     "standardFlowEnabled" : true,
     "implicitFlowEnabled" : false,
     "directAccessGrantsEnabled" : false,
-    "serviceAccountsEnabled" : false,
+    "serviceAccountsEnabled" : true,
+    "authorizationServicesEnabled" : true,
     "publicClient" : false,
     "frontchannelLogout" : true,
     "protocol" : "openid-connect",
@@ -608,14 +693,90 @@
       "client.secret.creation.time" : "1755799219",
       "backchannel.logout.session.required" : "true",
       "standard.token.exchange.enabled" : "false",
+      "frontchannel.logout.session.required" : "true",
+      "post.logout.redirect.uris" : "+",
+      "display.on.consent.screen" : "false",
       "oauth2.device.authorization.grant.enabled" : "false",
       "backchannel.logout.revoke.offline.tokens" : "false"
     },
     "authenticationFlowBindingOverrides" : { },
     "fullScopeAllowed" : true,
     "nodeReRegistrationTimeout" : -1,
-    "defaultClientScopes" : [ "web-origins", "acr", "profile", "roles", "basic", "email" ],
-    "optionalClientScopes" : [ "address", "phone", "organization", "offline_access", "microprofile-jwt" ]
+    "defaultClientScopes" : [ "service_account", "web-origins", "acr", "profile", "roles", "basic", "email" ],
+    "optionalClientScopes" : [ "address", "phone", "organization", "offline_access", "microprofile-jwt" ],
+    "authorizationSettings" : {
+      "allowRemoteResourceManagement" : true,
+      "policyEnforcementMode" : "PERMISSIVE",
+      "resources" : [ {
+        "name" : "users",
+        "ownerManagedAccess" : false,
+        "displayName" : "Users ctrl",
+        "attributes" : { },
+        "uris" : [ "/api/users/*" ],
+        "icon_uri" : ""
+      }, {
+        "name" : "reviews",
+        "ownerManagedAccess" : false,
+        "displayName" : "Game reviews",
+        "attributes" : { },
+        "uris" : [ "/api/reviews/*" ],
+        "icon_uri" : ""
+      } ],
+      "policies" : [ {
+        "name" : "Default Policy",
+        "description" : "A policy that grants access only for users within this realm",
+        "type" : "regex",
+        "logic" : "POSITIVE",
+        "decisionStrategy" : "AFFIRMATIVE",
+        "config" : {
+          "targetContextAttributes" : "false",
+          "pattern" : ".*",
+          "targetClaim" : "sub"
+        }
+      }, {
+        "name" : "Reviewer policy",
+        "type" : "role",
+        "logic" : "POSITIVE",
+        "decisionStrategy" : "UNANIMOUS",
+        "config" : {
+          "fetchRoles" : "false",
+          "roles" : "[{\"id\":\"invoice-scanner-service/reviewer\",\"required\":true}]"
+        }
+      }, {
+        "name" : "Default Permission",
+        "description" : "A permission that applies to the default resource type",
+        "type" : "resource",
+        "logic" : "POSITIVE",
+        "decisionStrategy" : "UNANIMOUS",
+        "config" : {
+          "defaultResourceType" : "urn:invoice-scanner-service:resources:default",
+          "applyPolicies" : "[\"Default Policy\"]"
+        }
+      }, {
+        "name" : "User",
+        "description" : "",
+        "type" : "resource",
+        "logic" : "POSITIVE",
+        "decisionStrategy" : "UNANIMOUS",
+        "config" : {
+          "defaultResourceType" : "",
+          "resources" : "[\"users\"]",
+          "applyPolicies" : "[\"Default Policy\"]"
+        }
+      }, {
+        "name" : "Reviews",
+        "description" : "",
+        "type" : "resource",
+        "logic" : "POSITIVE",
+        "decisionStrategy" : "UNANIMOUS",
+        "config" : {
+          "resources" : "[\"reviews\"]",
+          "applyPolicies" : "[\"Reviewer policy\"]"
+        }
+      } ],
+      "scopes" : [ ],
+      "decisionStrategy" : "UNANIMOUS"
+    }
   }, {
     "id" : "a81c0bb4-33c0-4b1e-82a5-443b3bc7543b",
     "clientId" : "realm-management",
@@ -637,7 +798,8 @@
     "frontchannelLogout" : false,
     "protocol" : "openid-connect",
     "attributes" : {
-      "realm_client" : "true"
+      "realm_client" : "true",
+      "post.logout.redirect.uris" : "+"
     },
     "authenticationFlowBindingOverrides" : { },
     "fullScopeAllowed" : false,
@@ -986,6 +1148,7 @@
       "config" : {
         "introspection.token.claim" : "true",
         "multivalued" : "true",
+        "userinfo.token.claim" : "true",
         "user.attribute" : "foo",
         "id.token.claim" : "true",
         "access.token.claim" : "true",
@@ -1031,12 +1194,13 @@
       "protocolMapper" : "oidc-organization-membership-mapper",
       "consentRequired" : false,
       "config" : {
-        "id.token.claim" : "true",
         "introspection.token.claim" : "true",
+        "multivalued" : "true",
+        "userinfo.token.claim" : "true",
+        "id.token.claim" : "true",
         "access.token.claim" : "true",
         "claim.name" : "organization",
-        "jsonType.label" : "String",
-        "multivalued" : "true"
+        "jsonType.label" : "String"
       }
     } ]
   }, {
@@ -1056,8 +1220,9 @@
       "consentRequired" : false,
       "config" : {
         "user.session.note" : "clientAddress",
-        "id.token.claim" : "true",
         "introspection.token.claim" : "true",
+        "userinfo.token.claim" : "true",
+        "id.token.claim" : "true",
         "access.token.claim" : "true",
         "claim.name" : "clientAddress",
         "jsonType.label" : "String"
@@ -1070,8 +1235,9 @@
       "consentRequired" : false,
       "config" : {
         "user.session.note" : "clientHost",
-        "id.token.claim" : "true",
         "introspection.token.claim" : "true",
+        "userinfo.token.claim" : "true",
+        "id.token.claim" : "true",
         "access.token.claim" : "true",
         "claim.name" : "clientHost",
         "jsonType.label" : "String"
@@ -1084,8 +1250,9 @@
       "consentRequired" : false,
       "config" : {
         "user.session.note" : "client_id",
-        "id.token.claim" : "true",
         "introspection.token.claim" : "true",
+        "userinfo.token.claim" : "true",
+        "id.token.claim" : "true",
         "access.token.claim" : "true",
         "claim.name" : "client_id",
         "jsonType.label" : "String"
@@ -1139,7 +1306,8 @@
       "config" : {
         "id.token.claim" : "true",
         "introspection.token.claim" : "true",
-        "access.token.claim" : "true"
+        "access.token.claim" : "true",
+        "userinfo.token.claim" : "true"
       }
     } ]
   }, {
@@ -1188,8 +1356,9 @@
       "consentRequired" : false,
       "config" : {
         "user.session.note" : "AUTH_TIME",
-        "id.token.claim" : "true",
         "introspection.token.claim" : "true",
+        "userinfo.token.claim" : "true",
+        "id.token.claim" : "true",
         "access.token.claim" : "true",
         "claim.name" : "auth_time",
         "jsonType.label" : "long"
@@ -1356,7 +1525,7 @@
       "subType" : "anonymous",
       "subComponents" : { },
       "config" : {
-        "allowed-protocol-mapper-types" : [ "saml-role-list-mapper", "oidc-usermodel-attribute-mapper", "oidc-usermodel-property-mapper", "oidc-sha256-pairwise-sub-mapper", "oidc-full-name-mapper", "oidc-address-mapper", "saml-user-attribute-mapper", "saml-user-property-mapper" ]
+        "allowed-protocol-mapper-types" : [ "oidc-address-mapper", "oidc-full-name-mapper", "oidc-usermodel-attribute-mapper", "saml-user-attribute-mapper", "saml-user-property-mapper", "oidc-usermodel-property-mapper", "saml-role-list-mapper", "oidc-sha256-pairwise-sub-mapper" ]
       }
     }, {
       "id" : "5f1725e6-c8d6-484a-88fc-55e7a86f4c1b",
@@ -1383,7 +1552,7 @@
       "subType" : "authenticated",
       "subComponents" : { },
       "config" : {
-        "allowed-protocol-mapper-types" : [ "oidc-sha256-pairwise-sub-mapper", "oidc-usermodel-property-mapper", "oidc-address-mapper", "saml-user-property-mapper", "saml-user-attribute-mapper", "oidc-usermodel-attribute-mapper", "saml-role-list-mapper", "oidc-full-name-mapper" ]
+        "allowed-protocol-mapper-types" : [ "oidc-usermodel-attribute-mapper", "oidc-address-mapper", "oidc-full-name-mapper", "oidc-sha256-pairwise-sub-mapper", "saml-role-list-mapper", "oidc-usermodel-property-mapper", "saml-user-attribute-mapper", "saml-user-property-mapper" ]
       }
     }, {
       "id" : "324d7983-d120-4fa8-a8db-ff0011a89f67",
@@ -2121,8 +2290,12 @@
     "cibaExpiresIn" : "120",
     "cibaAuthRequestedUserHint" : "login_hint",
     "oauth2DeviceCodeLifespan" : "600",
+    "clientOfflineSessionMaxLifespan" : "0",
     "oauth2DevicePollingInterval" : "5",
+    "clientSessionIdleTimeout" : "0",
     "parRequestUriLifespan" : "60",
+    "clientSessionMaxLifespan" : "0",
+    "clientOfflineSessionIdleTimeout" : "0",
     "cibaInterval" : "5",
     "realmReusableOtpCode" : "false"
   },
