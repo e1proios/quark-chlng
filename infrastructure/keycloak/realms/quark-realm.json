@@ -246,7 +246,22 @@
         "containerId" : "a81c0bb4-33c0-4b1e-82a5-443b3bc7543b",
         "attributes" : { }
       } ],
-      "iban-blacklist-service" : [ ],
+      "iban-blacklist-service" : [ {
+        "id" : "c2d53e14-f493-4e6b-a527-7813fc7e8388",
+        "name" : "blacklist role",
+        "description" : "",
+        "composite" : false,
+        "clientRole" : true,
+        "containerId" : "dc30fbfe-ae5d-4cff-84c9-9732b15b8efb",
+        "attributes" : { }
+      }, {
+        "id" : "4368c742-5fdd-47a5-8f77-5d594acdeae0",
+        "name" : "uma_protection",
+        "composite" : false,
+        "clientRole" : true,
+        "containerId" : "dc30fbfe-ae5d-4cff-84c9-9732b15b8efb",
+        "attributes" : { }
+      } ],
       "security-admin-console" : [ ],
       "invoice-scanner-service" : [ {
         "id" : "30d6cd87-2fea-46da-97bf-f3c502a5181b",
@@ -259,6 +274,14 @@
       }, {
         "id" : "a6e8c77c-ac7b-41ee-a79f-76f2690c4b76",
         "name" : "uma_protection",
+        "composite" : false,
+        "clientRole" : true,
+        "containerId" : "e96edc8a-ecef-4908-b078-2818c8e02816",
+        "attributes" : { }
+      }, {
+        "id" : "df2f0af5-e1c1-41ea-b55b-4926d8212453",
+        "name" : "scan role",
+        "description" : "",
         "composite" : false,
         "clientRole" : true,
         "containerId" : "e96edc8a-ecef-4908-b078-2818c8e02816",
@@ -440,11 +463,16 @@
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ ],
     "realmRoles" : [ "default-roles-quark" ],
+    "clientRoles" : {
+      "iban-blacklist-service" : [ "blacklist role" ]
+    },
     "notBefore" : 0,
     "groups" : [ ]
   }, {
     "id" : "7b8f2db4-d3f6-4759-86eb-cc13c30cb90d",
     "username" : "charlemagne",
+    "firstName" : "Charle",
+    "lastName" : "Magne",
     "email" : "charlemagne@vivelafrance.fr",
     "emailVerified" : true,
     "enabled" : true,
@@ -461,6 +489,23 @@
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ ],
     "realmRoles" : [ "default-roles-quark" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "1377f41e-c660-4571-86e4-d582186d9058",
+    "username" : "service-account-iban-blacklist-service",
+    "emailVerified" : false,
+    "enabled" : true,
+    "createdTimestamp" : 1756758626768,
+    "totp" : false,
+    "serviceAccountClientId" : "iban-blacklist-service",
+    "credentials" : [ ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-quark" ],
+    "clientRoles" : {
+      "iban-blacklist-service" : [ "uma_protection" ]
+    },
     "notBefore" : 0,
     "groups" : [ ]
   }, {
@@ -634,15 +679,16 @@
     "alwaysDisplayInConsole" : false,
     "clientAuthenticatorType" : "client-secret",
     "secret" : "DeMCRauIdrX2XveQsgrOuw2Ul2yjsBOT",
-    "redirectUris" : [ "http://localhost:8080/*" ],
-    "webOrigins" : [ "http://localhost:8080" ],
+    "redirectUris" : [ "http://localhost:8080/*", "http://localhost:8088/*" ],
+    "webOrigins" : [ "http://localhost:8080", "http://localhost:8088" ],
     "notBefore" : 0,
     "bearerOnly" : false,
     "consentRequired" : false,
     "standardFlowEnabled" : true,
     "implicitFlowEnabled" : false,
     "directAccessGrantsEnabled" : false,
-    "serviceAccountsEnabled" : false,
+    "serviceAccountsEnabled" : true,
+    "authorizationServicesEnabled" : true,
     "publicClient" : false,
     "frontchannelLogout" : true,
     "protocol" : "openid-connect",
@@ -652,15 +698,69 @@
       "client.secret.creation.time" : "1755799176",
       "backchannel.logout.session.required" : "true",
       "standard.token.exchange.enabled" : "false",
+      "frontchannel.logout.session.required" : "true",
       "post.logout.redirect.uris" : "+",
+      "display.on.consent.screen" : "false",
       "oauth2.device.authorization.grant.enabled" : "false",
       "backchannel.logout.revoke.offline.tokens" : "false"
     },
     "authenticationFlowBindingOverrides" : { },
     "fullScopeAllowed" : true,
     "nodeReRegistrationTimeout" : -1,
-    "defaultClientScopes" : [ "web-origins", "acr", "profile", "roles", "basic", "email" ],
-    "optionalClientScopes" : [ "address", "phone", "organization", "offline_access", "microprofile-jwt" ]
+    "defaultClientScopes" : [ "service_account", "web-origins", "acr", "profile", "roles", "basic", "email" ],
+    "optionalClientScopes" : [ "address", "phone", "organization", "offline_access", "microprofile-jwt" ],
+    "authorizationSettings" : {
+      "allowRemoteResourceManagement" : true,
+      "policyEnforcementMode" : "ENFORCING",
+      "resources" : [ {
+        "name" : "blacklist endpoint",
+        "ownerManagedAccess" : false,
+        "displayName" : "blacklist",
+        "attributes" : { },
+        "uris" : [ "/api/blacklist" ],
+        "icon_uri" : ""
+      } ],
+      "policies" : [ {
+        "name" : "Default Policy",
+        "description" : "A policy that grants access only for users within this realm",
+        "type" : "js",
+        "logic" : "POSITIVE",
+        "decisionStrategy" : "AFFIRMATIVE",
+        "config" : {
+          "code" : "// by default, grants any permission associated with this policy\n$evaluation.grant();\n"
+        }
+      }, {
+        "name" : "blacklist policy",
+        "type" : "role",
+        "logic" : "POSITIVE",
+        "decisionStrategy" : "UNANIMOUS",
+        "config" : {
+          "roles" : "[{\"id\":\"iban-blacklist-service/blacklist role\",\"required\":true}]"
+        }
+      }, {
+        "name" : "Default Permission",
+        "description" : "A permission that applies to the default resource type",
+        "type" : "resource",
+        "logic" : "POSITIVE",
+        "decisionStrategy" : "UNANIMOUS",
+        "config" : {
+          "defaultResourceType" : "urn:iban-blacklist-service:resources:default",
+          "applyPolicies" : "[\"Default Policy\"]"
+        }
+      }, {
+        "name" : "blacklist permission",
+        "description" : "",
+        "type" : "resource",
+        "logic" : "POSITIVE",
+        "decisionStrategy" : "UNANIMOUS",
+        "config" : {
+          "resources" : "[\"blacklist endpoint\"]",
+          "applyPolicies" : "[\"blacklist policy\"]"
+        }
+      } ],
+      "scopes" : [ ],
+      "decisionStrategy" : "UNANIMOUS"
+    }
   }, {
     "id" : "e96edc8a-ecef-4908-b078-2818c8e02816",
     "clientId" : "invoice-scanner-service",
@@ -721,6 +821,20 @@
         "attributes" : { },
         "uris" : [ "/api/reviews/*" ],
         "icon_uri" : ""
+      }, {
+        "name" : "ping",
+        "ownerManagedAccess" : false,
+        "displayName" : "ping",
+        "attributes" : { },
+        "uris" : [ "/api/ping" ],
+        "icon_uri" : ""
+      }, {
+        "name" : "scanner endpoint",
+        "ownerManagedAccess" : false,
+        "displayName" : "scan",
+        "attributes" : { },
+        "uris" : [ "/api/scan" ],
+        "icon_uri" : ""
       } ],
       "policies" : [ {
         "name" : "Default Policy",
@@ -743,6 +857,14 @@
           "roles" : "[{\"id\":\"invoice-scanner-service/reviewer\",\"required\":true}]"
         }
       }, {
+        "name" : "scan access",
+        "type" : "user",
+        "logic" : "POSITIVE",
+        "decisionStrategy" : "UNANIMOUS",
+        "config" : {
+          "users" : "[\"charlemagne\",\"adolf\"]"
+        }
+      }, {
         "name" : "Default Permission",
         "description" : "A permission that applies to the default resource type",
         "type" : "resource",
@@ -760,7 +882,7 @@
         "decisionStrategy" : "UNANIMOUS",
         "config" : {
           "defaultResourceType" : "",
-          "resources" : "[\"users\"]",
+          "resources" : "[\"users\",\"ping\"]",
           "applyPolicies" : "[\"Default Policy\"]"
         }
       }, {
@@ -772,6 +894,16 @@
         "config" : {
           "resources" : "[\"reviews\"]",
           "applyPolicies" : "[\"Reviewer policy\"]"
+        }
+      }, {
+        "name" : "scanner permission",
+        "description" : "",
+        "type" : "resource",
+        "logic" : "POSITIVE",
+        "decisionStrategy" : "UNANIMOUS",
+        "config" : {
+          "resources" : "[\"scanner endpoint\"]",
+          "applyPolicies" : "[\"scan access\"]"
         }
       } ],
       "scopes" : [ ],
@@ -1525,7 +1657,7 @@
       "subType" : "anonymous",
       "subComponents" : { },
       "config" : {
-        "allowed-protocol-mapper-types" : [ "oidc-address-mapper", "oidc-full-name-mapper", "oidc-usermodel-attribute-mapper", "saml-user-attribute-mapper", "saml-user-property-mapper", "oidc-usermodel-property-mapper", "saml-role-list-mapper", "oidc-sha256-pairwise-sub-mapper" ]
+        "allowed-protocol-mapper-types" : [ "oidc-address-mapper", "oidc-usermodel-property-mapper", "oidc-full-name-mapper", "oidc-usermodel-attribute-mapper", "saml-user-property-mapper", "saml-role-list-mapper", "oidc-sha256-pairwise-sub-mapper", "saml-user-attribute-mapper" ]
       }
     }, {
       "id" : "5f1725e6-c8d6-484a-88fc-55e7a86f4c1b",
@@ -1552,7 +1684,7 @@
       "subType" : "authenticated",
       "subComponents" : { },
       "config" : {
-        "allowed-protocol-mapper-types" : [ "oidc-usermodel-attribute-mapper", "oidc-address-mapper", "oidc-full-name-mapper", "oidc-sha256-pairwise-sub-mapper", "saml-role-list-mapper", "oidc-usermodel-property-mapper", "saml-user-attribute-mapper", "saml-user-property-mapper" ]
+        "allowed-protocol-mapper-types" : [ "oidc-address-mapper", "saml-user-attribute-mapper", "saml-user-property-mapper", "oidc-usermodel-property-mapper", "saml-role-list-mapper", "oidc-sha256-pairwise-sub-mapper", "oidc-usermodel-attribute-mapper", "oidc-full-name-mapper" ]
       }
     }, {
       "id" : "324d7983-d120-4fa8-a8db-ff0011a89f67",

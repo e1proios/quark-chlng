@@ -1,12 +1,25 @@
 quarkus:
+    http:
+      port: 8080
+
     keycloak:
         policy-enforcer:
             enable: true
+
+    log:
+        category:
+            "io.quarkus.oidc":
+                level: DEBUG
+            "io.quarkus.security":
+                level: DEBUG
+
     oidc:
-        auth-server-url: "http://app-keycloak:8888/realms/quark"
-        client-id: "invoice-scanner-service"
+        application-type: service
+        auth-server-url: "http://localhost:8888/realms/quark"
+        client-id: invoice-scanner-service
         credentials:
             secret: "nm1Hv5Z6zHbkrYtzGJwlQBbly3mzBzlq"
+
     rest-client:
         blacklist-service:
             url: "http://iban-blacklist-service:8080/"
@@ -33,4 +46,4 @@ mp:
 
 kafka:
     bootstrap:
-        servers: franz-kafka:9092
+        servers: "http://localhost:9092"

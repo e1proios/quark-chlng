@@ -1,22 +1,10 @@
 quarkus:
-#    mongodb:
-#        connection-string: "mongodb://app-mongo:27017"
-#        database: "blacklist"
-#        credentials:
-#            auth-source: "blacklist"
-#            username: "user"
-#            password: "password"
+    http:
+      port: 8088
 
     keycloak:
       policy-enforcer:
           enable: true
-
-    oidc:
-        application-type: service
-        auth-server-url: "http://app-keycloak:8888/realms/quark"
-        client-id: iban-blacklist-service
-        credentials:
-            secret: DeMCRauIdrX2XveQsgrOuw2Ul2yjsBOT
 
     log:
         category:
@@ -24,3 +12,18 @@ quarkus:
                 level: DEBUG
             "io.quarkus.security":
                 level: DEBUG
+
+    mongodb:
+        connection-string: "mongodb://localhost:27017"
+        database: "blacklist"
+        credentials:
+            auth-source: "blacklist"
+            username: "user"
+            password: "password"
+
+    oidc:
+        application-type: service
+        auth-server-url: "http://localhost:8888/realms/quark"
+        client-id: iban-blacklist-service
+        credentials:
+            secret: "DeMCRauIdrX2XveQsgrOuw2Ul2yjsBOT"
