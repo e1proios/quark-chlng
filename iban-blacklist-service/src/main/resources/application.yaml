@@ -14,7 +14,7 @@ quarkus:
                 level: DEBUG
 
     mongodb:
-        connection-string: "mongodb://localhost:27017"
+        connection-string: "mongodb://localhost:27217"
         database: "blacklist"
         credentials:
             auth-source: "blacklist"
