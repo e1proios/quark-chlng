@@ -1,32 +1,43 @@
-# quark-chlng
-this project consists of two Quarkus microservices, each run in a separate docker container:
-- `invoice-scanner-service`
-- `iban-blacklist-service`
+# repo: quark-chlng
 
-additionally, following services are run in their own docker containers:
-- a mongodb instance
-- a kafka server
-- a file server
-
+---
 ## prerequisites
 - Docker 20.10+
 - Docker Compose 2.0+
 - Java 17+
 
+---
+## architecture
+this project consists of two connected Quarkus microservices:
+- `invoice-scanner-service`
+- `iban-blacklist-service`
+
+additionally, following supporting services are run in a docker network:
+- a mongodb instance
+- a kafka server
+- a file server
+- a keycloak authentication server with its own postgres DB
+
+---
 ## build & run
+1. run `$ gradle build` in root directory
+2. run `$ quarkus dev` in `./invoice-scanner-service`
+3. run `$ quarkus dev` in `./iban-blacklist-service`
 
-in project root directory, first run
-<br>
-```$ gradle build```
-
-and then
-<br>
-```$ docker compose up --build```
-
+---
 ## test
 
+### keycloak users
+- adolf: adolf
+- bogdan: bogdan
+- charlemagne: vivelafrance
+
+adolf and charlemagne can scan; bogdan can blacklist
+
+---
 ### curl
 
+---
 ### kafka
 
 start two shells, connect to kafka server in both
