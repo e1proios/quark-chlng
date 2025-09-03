@@ -25,7 +25,7 @@ quarkus:
         client-id: iban-blacklist-service
         credentials:
             client-secret:
-                method: post
+                method: POST
                 value: "DeMCRauIdrX2XveQsgrOuw2Ul2yjsBOT"
 #        grant:
 #            type: client
