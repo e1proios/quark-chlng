@@ -22,8 +22,8 @@ additionally, following supporting services are run in a docker network:
 ## build & run
 1. run `$ gradle build` in the root directory
 2. run `$ docker compose up --build` in the root directory
-3. run `$ quarkus dev` in `./invoice-scanner-service`
-4. run `$ quarkus dev` in `./iban-blacklist-service`
+3. run `$ quarkus dev -Ddebug=5005` in `./invoice-scanner-service`
+4. run `$ quarkus dev -Ddebug=5006` in `./iban-blacklist-service`
 
 ---
 ## test

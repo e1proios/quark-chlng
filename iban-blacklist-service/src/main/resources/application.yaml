@@ -18,12 +18,12 @@ quarkus:
         database: "blacklist"
         credentials:
             auth-source: "blacklist"
-            username: "user"
-            password: "password"
+            username: ${MONGO_BLACKLIST_USER_LOGIN}
+            password: ${MONGO_BLACKLIST_USER_PASSWORD}
 
     oidc:
         application-type: service
         auth-server-url: "http://localhost:8888/realms/quark"
-        client-id: iban-blacklist-service
+        client-id: ${OIDC_BLACKLIST_SVC_CLIENT_ID}
         credentials:
-            secret: "DeMCRauIdrX2XveQsgrOuw2Ul2yjsBOT"
+            secret: ${OIDC_BLACKLIST_SVC_CLIENT_SECRET}

@@ -16,17 +16,17 @@ quarkus:
     oidc:
         application-type: service
         auth-server-url: "http://localhost:8888/realms/quark"
-        client-id: invoice-scanner-service
+        client-id: ${OIDC_SCAN_SVC_CLIENT_ID}
         credentials:
-            secret: "nm1Hv5Z6zHbkrYtzGJwlQBbly3mzBzlq"
+            secret: ${OIDC_SCAN_SVC_CLIENT_SECRET}
 
     oidc-client:
         auth-server-url: "http://localhost:8888/realms/quark"
-        client-id: confidential-blacklist
+        client-id: ${OIDC_CONFIDENTIAL_BLACKLIST_CLIENT_ID}
         credentials:
             client-secret:
                 method: POST
-                value: "FMg2cfCVR6pjGbwifLj1p75xPIUGzUnt"
+                value: ${OIDC_CONFIDENTIAL_BLACKLIST_CLIENT_SECRET}
         grant:
             type: client
         grant-options:
