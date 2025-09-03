@@ -8,7 +8,7 @@ import org.jboss.resteasy.reactive.RestResponse;
 
 import chlng.e1proios.util.DevLogger;
 
-@Authenticated
+//@Authenticated
 @Path("api/")
 public class InvoiceScanController {
 
@@ -38,9 +38,9 @@ public class InvoiceScanController {
         }
 
         try {
-            // var pdfInfo = this.invoiceScanService.checkPdfForBlacklistedIbans(data.url());
-            // return RestResponse.ok(pdfInfo);
-            return RestResponse.ok(new InvoiceScanService.PdfInfo(data.url, false, "", -1));
+            var pdfInfo = this.invoiceScanService.checkPdfForBlacklistedIbans(data.url());
+            return RestResponse.ok(pdfInfo);
+            //return RestResponse.ok(new InvoiceScanService.PdfInfo(data.url, false, "", -1));
         } catch (Exception e) {
             this.testLogger.log("Invoice scan controller: " + e.getMessage(), true);
             return RestResponse.status(500, e.getMessage());

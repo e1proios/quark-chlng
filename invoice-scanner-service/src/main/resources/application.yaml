@@ -20,9 +20,22 @@ quarkus:
         credentials:
             secret: "nm1Hv5Z6zHbkrYtzGJwlQBbly3mzBzlq"
 
+    oidc-client:
+        auth-server-url: "http://localhost:8888/realms/quark"
+        client-id: iban-blacklist-service
+        credentials:
+            client-secret:
+                method: post
+                value: "DeMCRauIdrX2XveQsgrOuw2Ul2yjsBOT"
+#        grant:
+#            type: client
+#        grant-options:
+#            client:
+#                audience: "http://localhost:8080/"
+
     rest-client:
         blacklist-service:
-            url: "http://iban-blacklist-service:8080/"
+            url: "http://localhost:8088/"
 
 mp:
     messaging:

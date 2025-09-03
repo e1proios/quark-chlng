@@ -20,9 +20,10 @@ additionally, following supporting services are run in a docker network:
 
 ---
 ## build & run
-1. run `$ gradle build` in root directory
-2. run `$ quarkus dev` in `./invoice-scanner-service`
-3. run `$ quarkus dev` in `./iban-blacklist-service`
+1. run `$ gradle build` in the root directory
+2. run `$ docker compose up --build` in the root directory
+3. run `$ quarkus dev` in `./invoice-scanner-service`
+4. run `$ quarkus dev` in `./iban-blacklist-service`
 
 ---
 ## test
@@ -32,7 +33,9 @@ additionally, following supporting services are run in a docker network:
 - bogdan: bogdan
 - charlemagne: vivelafrance
 
-adolf and charlemagne can scan; bogdan can blacklist
+bogdan can blacklist
+charlemagne can scan
+adolf can do whatever he wants
 
 ---
 ### curl
