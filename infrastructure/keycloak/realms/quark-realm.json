@@ -278,14 +278,6 @@
         "clientRole" : true,
         "containerId" : "e96edc8a-ecef-4908-b078-2818c8e02816",
         "attributes" : { }
-      }, {
-        "id" : "df2f0af5-e1c1-41ea-b55b-4926d8212453",
-        "name" : "scan role",
-        "description" : "",
-        "composite" : false,
-        "clientRole" : true,
-        "containerId" : "e96edc8a-ecef-4908-b078-2818c8e02816",
-        "attributes" : { }
       } ],
       "admin-cli" : [ ],
       "account-console" : [ ],
@@ -438,6 +430,7 @@
     "requiredActions" : [ ],
     "realmRoles" : [ "default-roles-quark" ],
     "clientRoles" : {
+      "iban-blacklist-service" : [ "blacklist role" ],
       "invoice-scanner-service" : [ "reviewer" ]
     },
     "notBefore" : 0,
@@ -686,7 +679,7 @@
     "consentRequired" : false,
     "standardFlowEnabled" : true,
     "implicitFlowEnabled" : false,
-    "directAccessGrantsEnabled" : false,
+    "directAccessGrantsEnabled" : true,
     "serviceAccountsEnabled" : true,
     "authorizationServicesEnabled" : true,
     "publicClient" : false,
@@ -723,13 +716,11 @@
       "policies" : [ {
         "name" : "Default Policy",
         "description" : "A policy that grants access only for users within this realm",
-        "type" : "regex",
+        "type" : "js",
         "logic" : "POSITIVE",
         "decisionStrategy" : "AFFIRMATIVE",
         "config" : {
-          "targetContextAttributes" : "false",
-          "pattern" : ".*",
-          "targetClaim" : "sub"
+          "code" : "// by default, grants any permission associated with this policy\n$evaluation.grant();\n"
         }
       }, {
         "name" : "blacklist policy",
@@ -783,7 +774,7 @@
     "consentRequired" : false,
     "standardFlowEnabled" : true,
     "implicitFlowEnabled" : false,
-    "directAccessGrantsEnabled" : false,
+    "directAccessGrantsEnabled" : true,
     "serviceAccountsEnabled" : true,
     "authorizationServicesEnabled" : true,
     "publicClient" : false,
