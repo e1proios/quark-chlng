@@ -29,13 +29,26 @@ additionally, following supporting services are run in a docker network:
 ## test
 
 ### keycloak users
-- adolf: adolf
-- bogdan: bogdan
-- charlemagne: vivelafrance
 
-bogdan can blacklist
-charlemagne can scan
-adolf can do whatever he wants
+#### chief
+user: chief\
+pwd: chief\
+rights: [admin]
+
+#### adolf
+user: adolf\
+pwd: adolf\
+rights: [blacklist, scan]
+
+#### bogdan
+user: bogdan\
+pwd: bogdan\
+rights: [blacklist]
+
+#### charlemagne
+user: charlemagne\
+pwd: vivelafrance\
+rights: [scan]
 
 ---
 ### curl
@@ -45,7 +58,7 @@ adolf can do whatever he wants
 
 start two shells, connect to kafka server in both
 <br>
-```$ docker exec -it franz-kafka bash```
+>```$ docker exec -it franz-kafka bash```
 
 start a message consumer in one of them
 <br>
