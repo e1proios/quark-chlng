@@ -8,7 +8,7 @@ import org.jboss.resteasy.reactive.RestResponse;
 
 import chlng.e1proios.util.DevLogger;
 
-//@Authenticated
+@Authenticated
 @Path("api/")
 public class InvoiceScanController {
 
