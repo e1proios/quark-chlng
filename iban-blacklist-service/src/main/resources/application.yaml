@@ -14,16 +14,16 @@ quarkus:
                 level: DEBUG
 
     mongodb:
-        connection-string: "mongodb://localhost:27217"
-        database: "blacklist"
+        connection-string: "${MONGO_CONNECT_STRING}"
+        database: "${MONGO_DB}"
         credentials:
-            auth-source: "blacklist"
-            username: ${MONGO_BLACKLIST_USER_LOGIN}
-            password: ${MONGO_BLACKLIST_USER_PASSWORD}
+            auth-source: "${MONGO_DB}"
+            username: "${MONGO_DB_USER_LOGIN}"
+            password: "${MONGO_DB_USER_PASSWORD}"
 
     oidc:
         application-type: service
-        auth-server-url: "http://localhost:8888/realms/quark"
-        client-id: ${OIDC_BLACKLIST_SVC_CLIENT_ID}
+        auth-server-url: "${KC_AUTH_SERVER_URL}"
+        client-id: "${OIDC_BLACKLIST_SVC_CLIENT_ID}"
         credentials:
-            secret: ${OIDC_BLACKLIST_SVC_CLIENT_SECRET}
+            secret: "${OIDC_BLACKLIST_SVC_CLIENT_SECRET}"

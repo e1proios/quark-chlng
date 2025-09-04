@@ -15,18 +15,18 @@ quarkus:
 
     oidc:
         application-type: service
-        auth-server-url: "http://localhost:8888/realms/quark"
-        client-id: ${OIDC_SCAN_SVC_CLIENT_ID}
+        auth-server-url: "${KC_AUTH_SERVER_URL}"
+        client-id: "${OIDC_SCAN_SVC_CLIENT_ID}"
         credentials:
-            secret: ${OIDC_SCAN_SVC_CLIENT_SECRET}
+            secret: "${OIDC_SCAN_SVC_CLIENT_SECRET}"
 
     oidc-client:
-        auth-server-url: "http://localhost:8888/realms/quark"
-        client-id: ${OIDC_CONFIDENTIAL_BLACKLIST_CLIENT_ID}
+        auth-server-url: "${KC_AUTH_SERVER_URL}"
+        client-id: "${OIDC_CONFIDENTIAL_BLACKLIST_CLIENT_ID}"
         credentials:
             client-secret:
                 method: POST
-                value: ${OIDC_CONFIDENTIAL_BLACKLIST_CLIENT_SECRET}
+                value: "${OIDC_CONFIDENTIAL_BLACKLIST_CLIENT_SECRET}"
         grant:
             type: client
         grant-options:
