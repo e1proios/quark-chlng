@@ -12,6 +12,8 @@ quarkus:
                 level: DEBUG
             "io.quarkus.security":
                 level: DEBUG
+        console:
+            level: DEBUG
 
     oidc:
         application-type: service
