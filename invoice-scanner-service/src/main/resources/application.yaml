@@ -43,10 +43,8 @@ mp:
             invoice-urls:
                 connector: smallrye-kafka
                 topic: invoice-urls
-                key:
-                    deserializer: org.apache.kafka.common.serialization.StringDeserializer
-                value:
-                    deserializer: org.apache.kafka.common.serialization.StringDeserializer
+                group:
+                    id: "invoice-scanners"
                 auto:
                     offset:
                         reset: earliest
@@ -54,8 +52,6 @@ mp:
             processed-invoices:
                 connector: smallrye-kafka
                 topic: processed-invoices
-                key:
-                    serializer: org.apache.kafka.common.serialization.StringSerializer
 
 kafka:
     bootstrap:

@@ -114,13 +114,13 @@ start two shells, connect to kafka server in both
 
 ```$ docker exec -it franz-kafka bash```
 
-start a message consumer in one of them
-
-```$ /opt/kafka/bin/kafka-console-consumer.sh --topic processed-invoices --bootstrap-server franz-kafka:9092```
-
-start a message producer in the other one
+start a message producer in one of them
 
 ```$ /opt/kafka/bin/kafka-console-producer.sh --topic invoice-urls --bootstrap-server franz-kafka:9092```
+
+start a message consumer in the other one
+
+```$ /opt/kafka/bin/kafka-console-consumer.sh --topic processed-invoices --bootstrap-server franz-kafka:9092```
 
 enter the URL of the testing PDF into the producer interactive session
 
