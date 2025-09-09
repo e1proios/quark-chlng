@@ -15,6 +15,12 @@ public class BlacklistController {
     BlacklistService blacklistService;
 
     @GET
+    @Path("/blacklist/{iban}")
+    public RestResponse<Boolean> isIbanBlacklisted(@PathParam("iban") String iban) {
+        return RestResponse.ok(this.blacklistService.isIbanBlacklisted(iban));
+    }
+
+    @GET
     @Path("/blacklist")
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)

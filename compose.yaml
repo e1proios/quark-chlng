@@ -29,7 +29,7 @@ services:
         ports:
             - "3333:3333"
         volumes:
-            - ./static_files:/app
+            - ./infrastructure/file-server/files:/app
         working_dir: /app
         command: python -m http.server 3333
         restart: unless-stopped

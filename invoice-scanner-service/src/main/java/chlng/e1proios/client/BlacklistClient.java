@@ -14,6 +14,10 @@ import chlng.e1proios.rest.BlacklistedIbanInterface;
 public interface BlacklistClient extends BlacklistedIbanInterface {
 
     @GET
+    @Path("/blacklist/{iban}")
+    RestResponse<Boolean> isIbanBlacklisted(@PathParam("iban") String iban);
+
+    @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/blacklist")

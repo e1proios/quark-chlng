@@ -813,7 +813,7 @@
         "ownerManagedAccess" : false,
         "displayName" : "blacklist",
         "attributes" : { },
-        "uris" : [ "/api/blacklist" ],
+        "uris" : [ "/api/blacklist", "/api/blacklist/*" ],
         "icon_uri" : ""
       } ],
       "policies" : [ {

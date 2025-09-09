@@ -94,7 +94,7 @@ public class InvoiceScanService {
             StringWriter writer = new StringWriter();
             stripper.writeText(pdfDoc, writer);
 
-            String pageText = writer.toString().trim();
+            String pageText = writer.toString().replaceAll("\\s+", "");
 
             Optional<String> res = Arrays.stream(blacklistedIbans)
                 .filter(pageText::contains)
